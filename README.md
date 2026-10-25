@@ -1,4 +1,4 @@
-# org-service-templates
+# idp-service-templates
 
 Golden paths for Backstage. Each template creates:
 
