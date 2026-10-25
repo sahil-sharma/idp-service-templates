@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: ${{ values.name }}
+spec:
+  hosts:
+    - ${{ values.name }}.local.io
+  gateways:
+    - istio-system/local-io
+  http:
+    - route:
+        - destination:
+            host: ${{ values.name }}
+            port:
+              number: 80

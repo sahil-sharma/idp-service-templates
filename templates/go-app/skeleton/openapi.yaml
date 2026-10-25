@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: ${{ values.name }}
+  version: "1.0"
+paths:
+  /:
+    get:
+      summary: Service greeting
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  service: { type: string }
+                  message: { type: string }
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+  /version:
+    get:
+      summary: Deployed version (git SHA)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version: { type: string }

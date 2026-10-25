@@ -1,0 +1,114 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: python-app
+  title: Python app service
+  description: Python (FastAPI) HTTP service with CI to Docker Hub, GitOps deployment via Argo CD, TechDocs and an OpenAPI spec.
+  tags: [python, recommended]
+spec:
+  owner: group:default/platform-team
+  type: service
+
+  parameters:
+    - title: Service
+      required: [name, description, owner, visibility]
+      properties:
+        name:
+          title: Name
+          type: string
+          pattern: '^[a-z][a-z0-9-]{1,30}$'
+          ui:autofocus: true
+          ui:help: Lowercase letters, digits and dashes. Used for the repo, image, namespace and Argo CD app.
+        description:
+          title: Description
+          type: string
+        owner:
+          title: Owner team
+          type: string
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: Group
+        visibility:
+          title: Repository visibility
+          type: string
+          enum: [public, private]
+          default: public
+
+    - title: CI credentials
+      required: [dockerhubToken, gitopsToken]
+      properties:
+        dockerhubToken:
+          title: Docker Hub access token
+          type: string
+          ui:field: Secret
+        gitopsToken:
+          title: GitOps token (fine-grained PAT, gitops repo only)
+          type: string
+          ui:field: Secret
+
+  steps:
+    - id: fetch-app
+      name: Generate app repo
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: ./app
+        copyWithoutTemplating:
+          - .github/workflows/*
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+
+    - id: fetch-gitops
+      name: Generate deployment manifests
+      action: fetch:template
+      input:
+        url: ./gitops
+        targetPath: ./gitops
+        values:
+          name: ${{ parameters.name }}
+
+    - id: publish
+      name: Create GitHub repo
+      action: publish:github
+      input:
+        repoUrl: github.com?owner=__GH_USER__&repo=${{ parameters.name }}
+        description: ${{ parameters.description }}
+        repoVisibility: ${{ parameters.visibility }}
+        defaultBranch: main
+        protectDefaultBranch: false
+        sourcePath: ./app
+        secrets:
+          DOCKERHUB_USERNAME: __DOCKERHUB_USER__
+          DOCKERHUB_TOKEN: ${{ secrets.dockerhubToken }}
+          GITOPS_TOKEN: ${{ secrets.gitopsToken }}
+
+    - id: gitops-pr
+      name: Open deployment PR on gitops
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?owner=__GH_USER__&repo=gitops
+        branchName: add-${{ parameters.name }}
+        title: Deploy ${{ parameters.name }}
+        description: Adds apps/${{ parameters.name }} (created by the Backstage python-app template, owner ${{ parameters.owner }}).
+        sourcePath: ./gitops
+        targetPath: apps/${{ parameters.name }}
+
+    - id: register
+      name: Register in catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Deployment PR (merge to deploy)
+        url: ${{ steps['gitops-pr'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}

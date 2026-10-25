@@ -1,0 +1,11 @@
+# Registered once in Backstage (catalog.locations). Add one line per new template.
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: org-service-templates
+  description: Golden-path templates and the idp-demo System
+spec:
+  targets:
+    - ./system.yaml
+    - ./templates/go-app/template.yaml
+    - ./templates/python-app/template.yaml

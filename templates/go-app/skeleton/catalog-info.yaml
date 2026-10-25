@@ -1,0 +1,52 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: ${{ values.description }}
+  tags: [go]
+  annotations:
+    github.com/project-slug: __GH_USER__/${{ values.name }}           # GitHub Actions tab
+    backstage.io/techdocs-ref: dir:.                                    # Docs tab
+    argocd/app-name: ${{ values.name }}                                # Argo CD card
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/name=${{ values.name }}   # Kubernetes tab
+    backstage.io/kubernetes-namespace: ${{ values.name }}
+    vault.io/secrets-path: apps/${{ values.name }}                     # Vault card
+  links:
+    - title: Open app
+      url: https://${{ values.name }}.local.io:32443
+      icon: dashboard
+    - title: Argo CD
+      url: https://cd.local.io:32443/applications/argocd/${{ values.name }}
+      icon: dashboard
+    - title: CI (GitHub Actions)
+      url: https://github.com/__GH_USER__/${{ values.name }}/actions
+      icon: github
+    - title: Deployment manifests
+      url: https://github.com/__GH_USER__/gitops/tree/main/apps/${{ values.name }}
+      icon: github
+    - title: Grafana dashboard
+      url: https://grafana.local.io:32443/d/service-overview?var-namespace=${{ values.name }}
+      icon: dashboard
+    - title: Secrets (Vault)
+      url: https://vault.local.io:32443/ui/vault/secrets/secret/kv/list/apps/${{ values.name }}/
+      icon: dashboard
+spec:
+  type: service
+  lifecycle: experimental
+  owner: ${{ values.owner }}
+  system: idp-demo
+  providesApis:
+    - ${{ values.name }}-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: ${{ values.name }}-api
+  description: HTTP API of ${{ values.name }}
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: ${{ values.owner }}
+  system: idp-demo
+  definition:
+    $text: ./openapi.yaml
