@@ -6,7 +6,7 @@ ${{ values.description }}
 |---|---|
 | Language | Python (FastAPI) |
 | Owner | ${{ values.owner }} |
-| Image | `docker.io/__DOCKERHUB_USER__/${{ values.name }}` |
+| Image | `docker.io/sahilwork/${{ values.name }}` |
 | Deployed by | Argo CD, from `gitops/apps/${{ values.name }}` |
 
 ## How a change reaches the cluster

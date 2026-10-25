@@ -6,5 +6,5 @@ resources:
   - virtualservice.yaml
 images:
   - name: app
-    newName: docker.io/__DOCKERHUB_USER__/${{ values.name }}
+    newName: docker.io/sahilwork/${{ values.name }}
     newTag: latest

@@ -74,14 +74,14 @@ spec:
       name: Create GitHub repo
       action: publish:github
       input:
-        repoUrl: github.com?owner=__GH_USER__&repo=${{ parameters.name }}
+        repoUrl: github.com?owner=sahil-sharma&repo=${{ parameters.name }}
         description: ${{ parameters.description }}
         repoVisibility: ${{ parameters.visibility }}
         defaultBranch: main
         protectDefaultBranch: false
         sourcePath: ./app
         secrets:
-          DOCKERHUB_USERNAME: __DOCKERHUB_USER__
+          DOCKERHUB_USERNAME: sahilwork
           DOCKERHUB_TOKEN: ${{ secrets.dockerhubToken }}
           GITOPS_TOKEN: ${{ secrets.gitopsToken }}
 
@@ -89,7 +89,7 @@ spec:
       name: Open deployment PR on gitops
       action: publish:github:pull-request
       input:
-        repoUrl: github.com?owner=__GH_USER__&repo=gitops
+        repoUrl: github.com?owner=sahil-sharma&repo=gitops
         branchName: add-${{ parameters.name }}
         title: Deploy ${{ parameters.name }}
         description: Adds apps/${{ parameters.name }} (created by the Backstage go-app template, owner ${{ parameters.owner }}).

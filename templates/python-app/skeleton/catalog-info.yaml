@@ -5,7 +5,7 @@ metadata:
   description: ${{ values.description }}
   tags: [python]
   annotations:
-    github.com/project-slug: __GH_USER__/${{ values.name }}           # GitHub Actions tab
+    github.com/project-slug: sahil-sharma/${{ values.name }}           # GitHub Actions tab
     backstage.io/techdocs-ref: dir:.                                    # Docs tab
     argocd/app-name: ${{ values.name }}                                # Argo CD card
     backstage.io/kubernetes-label-selector: app.kubernetes.io/name=${{ values.name }}   # Kubernetes tab
@@ -19,10 +19,10 @@ metadata:
       url: https://cd.local.io:32443/applications/argocd/${{ values.name }}
       icon: dashboard
     - title: CI (GitHub Actions)
-      url: https://github.com/__GH_USER__/${{ values.name }}/actions
+      url: https://github.com/sahil-sharma/${{ values.name }}/actions
       icon: github
     - title: Deployment manifests
-      url: https://github.com/__GH_USER__/gitops/tree/main/apps/${{ values.name }}
+      url: https://github.com/sahil-sharma/gitops/tree/main/apps/${{ values.name }}
       icon: github
     - title: Grafana dashboard
       url: https://grafana.local.io:32443/d/service-overview?var-namespace=${{ values.name }}

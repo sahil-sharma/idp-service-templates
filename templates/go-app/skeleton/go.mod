@@ -1,3 +1,3 @@
-module github.com/__GH_USER__/${{ values.name }}
+module github.com/sahil-sharma/${{ values.name }}
 
 go 1.26
