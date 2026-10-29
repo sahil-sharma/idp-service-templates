@@ -35,18 +35,6 @@ spec:
           enum: [public, private]
           default: public
 
-    - title: CI credentials
-      required: [dockerhubToken, gitopsToken]
-      properties:
-        dockerhubToken:
-          title: Docker Hub access token
-          type: string
-          ui:field: Secret
-        gitopsToken:
-          title: GitOps token (fine-grained PAT, gitops repo only)
-          type: string
-          ui:field: Secret
-
   steps:
     - id: fetch-app
       name: Generate app repo

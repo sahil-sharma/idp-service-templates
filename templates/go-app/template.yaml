@@ -35,18 +35,6 @@ spec:
           enum: [public, private]
           default: public
 
-    - title: CI credentials
-      required: [dockerhubToken, gitopsToken]
-      properties:
-        dockerhubToken:
-          title: Docker Hub access token
-          type: string
-          ui:field: Secret
-        gitopsToken:
-          title: GitOps token (fine-grained PAT, gitops repo only)
-          type: string
-          ui:field: Secret
-
   steps:
     - id: fetch-app
       name: Generate app repo
@@ -83,18 +71,18 @@ spec:
         secrets:
           DOCKERHUB_USERNAME: sahilwork
           DOCKERHUB_TOKEN: ${{ secrets.dockerhubToken }}
-          GITOPS_TOKEN: ${{ secrets.gitopsToken }}
+          # GITOPS_TOKEN: ${{ secrets.gitopsToken }}
 
-    - id: gitops-pr
-      name: Open deployment PR on gitops
-      action: publish:github:pull-request
-      input:
-        repoUrl: github.com?owner=sahil-sharma&repo=gitops
-        branchName: add-${{ parameters.name }}
-        title: Deploy ${{ parameters.name }}
-        description: Adds apps/${{ parameters.name }} (created by the Backstage go-app template, owner ${{ parameters.owner }}).
-        sourcePath: ./gitops
-        targetPath: apps/${{ parameters.name }}
+    # - id: gitops-pr
+    #   name: Open deployment PR on gitops
+    #   action: publish:github:pull-request
+    #   input:
+    #     repoUrl: github.com?owner=sahil-sharma&repo=gitops
+    #     branchName: add-${{ parameters.name }}
+    #     title: Deploy ${{ parameters.name }}
+    #     description: Adds apps/${{ parameters.name }} (created by the Backstage go-app template, owner ${{ parameters.owner }}).
+    #     sourcePath: ./gitops
+    #     targetPath: apps/${{ parameters.name }}
 
     - id: register
       name: Register in catalog
